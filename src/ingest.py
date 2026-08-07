@@ -14,7 +14,9 @@ while len(cve_records)<target:
         print(data) 
     for vuln in data["vulnerabilities"]:
         cvn_id=vuln["cve"]["id"]
-        base_score=vuln["cve"]["metrics"]["cvssMetricV2"][0]["cvssData"]["baseScore"]
+        metrics = vuln["cve"].get("metrics", {})
+        cvss_v2 = metrics.get("cvssMetricV2")
+        base_score = cvss_v2[0]["cvssData"]["baseScore"] if cvss_v2 else None
         for desc in vuln["cve"]["descriptions"]:
             if desc["lang"]=="en":
                 cve_records.append({"id": cvn_id, "description": desc["value"],"baseScore": base_score})
